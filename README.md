@@ -1,2 +1,1 @@
-datasciencecoursera
-===================
+# Kaggle Competition Playground
