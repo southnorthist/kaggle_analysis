@@ -14,3 +14,6 @@ The projects in the GitHub aim for learning Machine Learning and Data Science Me
 * Univariate Analysis
 * Multivariate Analysis
 * Feature Selection
+
+#### Kaggle Competition Practices
+* Predicting House Prices
