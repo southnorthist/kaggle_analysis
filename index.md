@@ -9,6 +9,7 @@ The projects in the GitHub aim for learning Machine Learning and Data Science Me
 * Tree-Based Methods and Application
 * Support Vector Machine Methods and Application
 * Model Interpretability
+
 #### Data Science Toolkit
 * Univariate Analysis
 * Multivariate Analysis
