@@ -11,7 +11,7 @@ def split_num_cat_target(df, id, target, lvl_theta):
     return {'categorical': categorical_col, 'target': target_col, 'id': id_col, 'numerical': numeric_col}
 
 def plot_all_dist(df, figsize, num_var, row, col):
-    plt.style.use('ggplot2')
+    #plt.style.use('ggplot2')
     fig = plt.figure(figsize = figsize)
     for index in range(1, len(num_var) + 1):
         ax = fig.add_subplot(row, col, index)
