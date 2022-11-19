@@ -5,7 +5,7 @@ This page gives an overview of the projects that I have been working. Particular
 
 ### Machine Learning in Action
 
-* Credit Card Default Analysis comparing Logistic Regression, Decision Trees, Random Forests and XGBoost
+* Creditability Classification using Logistic Regression, Decision Trees, Random Forests and XGBoost
   * Python: Pandas, Matplotlib, Seaborn, Scikit-Learn, XGBoost
   
 * Credit Card User Clustering 
@@ -23,11 +23,11 @@ This page gives an overview of the projects that I have been working. Particular
 I'm summarizing the basic statistics concepts and machine learning methodologies in jupyter notebooks in plain language.
 
 * Confusion Matrix, Precision/Recall, ROC curve
+* Simple Linear Regression
 * Logistic Regression
-* Decision Tree
-* Random Forest
+* Tree-based Method
 * XGBoost
-* KMeans, Hierarchical Clustering
-
+* Clustering (KMeans, Hierarchical clustering, DBSCAN)
+*
 ### Data Science Toolkit
-I have also buit some utility functions to help preprocessing and visualizing to facilitate machine learning model build.
+I'm also building some utility functions to help preprocessing and visualizing to facilitate machine learning model build.
