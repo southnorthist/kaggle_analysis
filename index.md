@@ -5,7 +5,7 @@ This page gives an overview of the projects that I have been working. Particular
 
 ### Machine Learning in Action
 
-* Creditability Classification using Logistic Regression, Decision Trees, Random Forests and XGBoost - wip
+* Credit-ability Classification using Logistic Regression, Decision Trees, Random Forests and XGBoost - wip
   * Python: Pandas, Matplotlib, Seaborn, Scikit-Learn, XGBoost
   
 * Credit Card User Clustering - v1
