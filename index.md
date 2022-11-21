@@ -5,17 +5,18 @@ This page gives an overview of the projects that I have been working. Particular
 
 ### Machine Learning in Action
 
-* Credit-ability Classification using Logistic Regression, Decision Trees, Random Forests and XGBoost - wip
+* Credit-ability Classification using Logistic Regression, Decision Trees, Random Forests and XGBoost - _wip_
   * Python: Pandas, Matplotlib, Seaborn, Scikit-Learn, XGBoost
   
-* Credit Card User Clustering - v1
+* Credit Card User Clustering - _v1_
   * Python: Pandas, Matplotlib, Seaborn, Scikit-Learn
   
-* Movie Lens Data Market Basket Analysis
+* US Real GDP and Personal Income by States and Industry  Visualization - _v1_
+  * Python: Request for API data extraction, Tableau public
+  
+* Movie Lens Data Market Basket Analysis - _wip_
   * Python: Pandas, Matplotlib, Seaborn, MLxtend
   
-* Canadian Provincial GDP and Median Income Visualization - v1
-  * Tableau public
 
 
 ### Statistics and Machine Learning Concepts Made Easy
@@ -23,10 +24,10 @@ I'm summarizing the basic statistics concepts and machine learning methodologies
 
 * Confusion Matrix, Precision/Recall, ROC curve
 * Simple Linear Regression
-* Logistic Regression - wip
-* Tree-based Method - wip
-* XGBoost - v0
-* Clustering (KMeans, Hierarchical clustering, DBSCAN) - v1
+* Logistic Regression - _wip_
+* Tree-based Method - _wip_
+* XGBoost - _v1_
+* Clustering (KMeans, Hierarchical clustering, DBSCAN) - _v1_
 
 ### Data Science Toolkit
 I'm also building some utility functions to help preprocessing and visualizing to facilitate machine learning model build.
