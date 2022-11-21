@@ -11,7 +11,7 @@ This page gives an overview of the projects that I have been working. Particular
 * Credit Card User Clustering - _v1_
   * Python: Pandas, Matplotlib, Seaborn, Scikit-Learn
   
-* US Real GDP and Personal Income by States and Industry  Visualization - _v1_
+* US Real GDP and Personal Income by States Visualization - _v1_
   * Python: Request for API data extraction, Tableau public
   
 * Movie Lens Data Market Basket Analysis - _wip_
