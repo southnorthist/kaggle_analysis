@@ -1,0 +1,93 @@
+Key,Desc
+1,[SAGDP9N] Real GDP by state: All industry total
+10,[SAGDP9N] Real GDP by state: Utilities (NAICS:22)
+11,[SAGDP9N] Real GDP by state: Construction (NAICS:23)
+12,[SAGDP9N] Real GDP by state: Manufacturing (NAICS:31-33)
+13,"[SAGDP9N] Real GDP by state: Durable goods manufacturing (NAICS:321,327-339)"
+14,[SAGDP9N] Real GDP by state: Wood product manufacturing (NAICS:321)
+15,[SAGDP9N] Real GDP by state: Nonmetallic mineral product manufacturing (NAICS:327)
+16,[SAGDP9N] Real GDP by state: Primary metal manufacturing (NAICS:331)
+17,[SAGDP9N] Real GDP by state: Fabricated metal product manufacturing (NAICS:332)
+18,[SAGDP9N] Real GDP by state: Machinery manufacturing (NAICS:333)
+19,[SAGDP9N] Real GDP by state: Computer and electronic product manufacturing (NAICS:334)
+2,[SAGDP9N] Real GDP by state: Private industries
+20,"[SAGDP9N] Real GDP by state: Electrical equipment, appliance, and component manufacturing (NAICS:335)"
+21,"[SAGDP9N] Real GDP by state: Motor vehicles, bodies and trailers, and parts manufacturing (NAICS:3361-3363)"
+22,[SAGDP9N] Real GDP by state: Other transportation equipment manufacturing (NAICS:3364-3369)
+23,[SAGDP9N] Real GDP by state: Furniture and related product manufacturing (NAICS:337)
+24,[SAGDP9N] Real GDP by state: Miscellaneous manufacturing (NAICS:339)
+25,"[SAGDP9N] Real GDP by state: Nondurable goods manufacturing (NAICS:311-316,322-326)"
+26,[SAGDP9N] Real GDP by state: Food and beverage and tobacco product manufacturing (NAICS:311-312)
+27,[SAGDP9N] Real GDP by state: Textile mills and textile product mills (NAICS:313-314)
+28,"[SAGDP9N] Real GDP by state: Apparel, leather, and allied product manufacturing (NAICS:315-316)"
+29,[SAGDP9N] Real GDP by state: Paper manufacturing (NAICS:322)
+3,"[SAGDP9N] Real GDP by state: Agriculture, forestry, fishing and hunting (NAICS:11)"
+30,[SAGDP9N] Real GDP by state: Printing and related support activities (NAICS:323)
+31,[SAGDP9N] Real GDP by state: Petroleum and coal products manufacturing (NAICS:324)
+32,[SAGDP9N] Real GDP by state: Chemical manufacturing (NAICS:325)
+33,[SAGDP9N] Real GDP by state: Plastics and rubber products manufacturing (NAICS:326)
+34,[SAGDP9N] Real GDP by state: Wholesale trade (NAICS:42)
+35,[SAGDP9N] Real GDP by state: Retail trade (NAICS:44-45)
+36,[SAGDP9N] Real GDP by state: Transportation and warehousing (NAICS:48-49)
+37,[SAGDP9N] Real GDP by state: Air transportation (NAICS:481)
+38,[SAGDP9N] Real GDP by state: Rail transportation (NAICS:482)
+39,[SAGDP9N] Real GDP by state: Water transportation (NAICS:483)
+4,[SAGDP9N] Real GDP by state: Farms (NAICS:111-112)
+40,[SAGDP9N] Real GDP by state: Truck transportation (NAICS:484)
+41,[SAGDP9N] Real GDP by state: Transit and ground passenger transportation (NAICS:485)
+42,[SAGDP9N] Real GDP by state: Pipeline transportation (NAICS:486)
+43,"[SAGDP9N] Real GDP by state: Other transportation and support activities (NAICS:487-488, 492)"
+44,[SAGDP9N] Real GDP by state: Warehousing and storage (NAICS:493)
+45,[SAGDP9N] Real GDP by state: Information (NAICS:51)
+46,[SAGDP9N] Real GDP by state: Publishing industries (except Internet) (NAICS:511)
+47,[SAGDP9N] Real GDP by state: Motion picture and sound recording industries (NAICS:512)
+48,"[SAGDP9N] Real GDP by state: Broadcasting (except Internet) and telecommunications (NAICS:515, 517)"
+49,"[SAGDP9N] Real GDP by state: Data processing, hosting, and other information services (NAICS:518, 519)"
+5,"[SAGDP9N] Real GDP by state: Forestry, fishing, and related activities (NAICS:113-115)"
+50,"[SAGDP9N] Real GDP by state: Finance, insurance, real estate, rental, and leasing (NAICS:52, 53)"
+51,[SAGDP9N] Real GDP by state: Finance and insurance (NAICS:52)
+52,"[SAGDP9N] Real GDP by state: Monetary Authorities- central bank, credit intermediation, and related services (NAICS:521-522)"
+53,"[SAGDP9N] Real GDP by state: Securities, commodity contracts, and other financial investments and related activities (NAICS:523)"
+54,[SAGDP9N] Real GDP by state: Insurance carriers and related activities (NAICS:524)
+55,"[SAGDP9N] Real GDP by state: Funds, trusts, and other financial vehicles (NAICS:525)"
+56,[SAGDP9N] Real GDP by state: Real estate and rental and leasing (NAICS:53)
+57,[SAGDP9N] Real GDP by state: Real estate (NAICS:531)
+58,[SAGDP9N] Real GDP by state: Rental and leasing services and lessors of nonfinancial intangible assets (NAICS:532-533)
+59,"[SAGDP9N] Real GDP by state: Professional and business services (NAICS:54, 55, 56)"
+6,"[SAGDP9N] Real GDP by state: Mining, quarrying, and oil and gas extraction (NAICS:21)"
+60,"[SAGDP9N] Real GDP by state: Professional, scientific, and technical services (NAICS:54)"
+61,[SAGDP9N] Real GDP by state: Legal services (NAICS:5411)
+62,[SAGDP9N] Real GDP by state: Computer systems design and related services (NAICS:5415)
+63,"[SAGDP9N] Real GDP by state: Miscellaneous professional, scientific, and technical services (NAICS:5412-5414, 5416-5419)"
+64,[SAGDP9N] Real GDP by state: Management of companies and enterprises (NAICS:55)
+65,[SAGDP9N] Real GDP by state: Administrative and support and waste management and remediation services (NAICS:56)
+66,[SAGDP9N] Real GDP by state: Administrative and support services (NAICS:561)
+67,[SAGDP9N] Real GDP by state: Waste management and remediation services (NAICS:562)
+68,"[SAGDP9N] Real GDP by state: Educational services, health care, and social assistance (NAICS:61, 62)"
+69,[SAGDP9N] Real GDP by state: Educational services (NAICS:61)
+7,[SAGDP9N] Real GDP by state: Oil and gas extraction (NAICS:211)
+70,[SAGDP9N] Real GDP by state: Health care and social assistance (NAICS:62)
+71,[SAGDP9N] Real GDP by state: Ambulatory health care services (NAICS:621)
+72,[SAGDP9N] Real GDP by state: Hospitals (NAICS:622)
+73,[SAGDP9N] Real GDP by state: Nursing and residential care facilities (NAICS:623)
+74,[SAGDP9N] Real GDP by state: Social assistance (NAICS:624)
+75,"[SAGDP9N] Real GDP by state: Arts, entertainment, recreation, accommodation, and food services (NAICS:71, 72)"
+76,"[SAGDP9N] Real GDP by state: Arts, entertainment, and recreation (NAICS:71)"
+77,"[SAGDP9N] Real GDP by state: Performing arts, spectator sports, museums, and related activities (NAICS:711-712)"
+78,"[SAGDP9N] Real GDP by state: Amusement, gambling, and recreation industries (NAICS:713)"
+79,[SAGDP9N] Real GDP by state: Accommodation and food services (NAICS:72)
+8,[SAGDP9N] Real GDP by state: Mining (except oil and gas) (NAICS:212)
+80,[SAGDP9N] Real GDP by state: Accommodation (NAICS:721)
+81,[SAGDP9N] Real GDP by state: Food services and drinking places (NAICS:722)
+82,[SAGDP9N] Real GDP by state: Other services (except government and government enterprises) (NAICS:81)
+83,[SAGDP9N] Real GDP by state: Government and government enterprises
+84,[SAGDP9N] Real GDP by state: Federal civilian
+85,[SAGDP9N] Real GDP by state: Military
+86,[SAGDP9N] Real GDP by state: State and local
+87,"[SAGDP9N] Real GDP by state: Natural resources and mining (NAICS:11, 21)"
+88,"[SAGDP9N] Real GDP by state: Trade (NAICS:42, 44-45)"
+89,"[SAGDP9N] Real GDP by state: Transportation and utilities (NAICS:22, 48-49)"
+9,[SAGDP9N] Real GDP by state: Support activities for mining (NAICS:213)
+90,"[SAGDP9N] Real GDP by state: Manufacturing and information (NAICS:31-33, 51)"
+91,[SAGDP9N] Real GDP by state: Private goods-producing industries
+92,[SAGDP9N] Real GDP by state: Private services-providing industries
