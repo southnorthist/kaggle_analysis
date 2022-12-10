@@ -1,21 +1,21 @@
 ## Welcome to My GitHub Page
 
-This page gives an overview of the projects that I have been working. Particularliy on problems that interests me using machine learning techniques and visualization tools.
+This page gives an overview of the projects that I have been working on. Particularliy on problems that interests me using machine learning techniques and visualization tools.
 
 
 ### Machine Learning in Action
 
 * Credit-ability Classification using Logistic Regression, Decision Trees, Random Forests and XGBoost - _wip_
   * Python: Pandas, Matplotlib, Seaborn, Scikit-Learn, XGBoost
+
+* Using Movie Lens Data for Market Basket Analysis and Recommender Systems- _tbd_
+  * Python: Pandas, Matplotlib, Seaborn, MLxtend
   
-* Credit Card User Clustering - _v1_
+* Credit Card User Segmentation with Clustering - _v1_
   * Python: Pandas, Matplotlib, Seaborn, Scikit-Learn
   
 * US Real GDP and Personal Income by States Visualization - _v1_
   * Python: Request for API data extraction, Tableau public
-  
-* Movie Lens Data Market Basket Analysis - _wip_
-  * Python: Pandas, Matplotlib, Seaborn, MLxtend
   
 
 
@@ -24,10 +24,11 @@ I'm summarizing the basic statistics concepts and machine learning methodologies
 
 * Confusion Matrix, Precision/Recall, ROC curve
 * Simple Linear Regression
-* Logistic Regression - _wip_
-* Tree-based Method - _wip_
+* Basic Classification Methods - _v1_
+* Tree-based Method - _v1_
 * XGBoost - _v1_
 * Clustering (KMeans, Hierarchical clustering, DBSCAN) - _v1_
 
 ### Data Science Toolkit
-I'm also building some utility functions to help preprocessing and visualizing to facilitate machine learning model build.
+I'm also building some utility functions to help preprocessing and visualizing data, tuning machine learning models.
+In addition, I summarize and share useful tips on SQL and MLOPs after self-learning in here: https://southwest-qh.github.io/
