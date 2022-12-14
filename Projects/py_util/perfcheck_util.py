@@ -67,6 +67,11 @@ def plot_feature_importance(estimator, feature_names, encode_cat_list, figsize=(
     estimator: A fitted scikit-learn estimator object
     features_names: array
                     Feature names of the dataset
+    
+    Results
+    ------
+    importance_df_plot: pandas.DataFrame
+                        A data frame that contains the feature importance for plotting
     """
     if type(estimator) == type(sklearn.linear_model.LogisticRegression()):
         importance_array = estimator.coef_.reshape(-1)
@@ -89,3 +94,4 @@ def plot_feature_importance(estimator, feature_names, encode_cat_list, figsize=(
     ax.set_yticks(pos, importance_df_plot['var_name_lvl2'])
     ax.set_title('Feature Importance')
     plt.show()
+    return importance_df_plot

@@ -65,7 +65,7 @@ def plot_all_dist(df, figsize, num_var, row, col):
                             hspace=0.4)
     plt.show()
 
-def add_value_labels(ax, spacing=5, fmt="{:.1f}", fontsize=8):
+def add_value_labels(ax, spacing=0.5, fmt="{:.1f}", fontsize=8):
 
     # For each bar: Place a label
         for rect in ax.patches:
@@ -112,6 +112,8 @@ def plot_all_freq(df, figsize, cat_var, row, col, **kwargs):
         #x.sort()
         #ax.set_xticks(x)
         ax.set_title(cat_var_name)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
         add_value_labels(ax, **kwargs)
         plt.subplots_adjust(left=0.1,
                             bottom=0.05,
@@ -122,7 +124,7 @@ def plot_all_freq(df, figsize, cat_var, row, col, **kwargs):
     plt.show()
     
     
-def plot_odds_cat(df, cat_var_list, target, figsize, row, col):
+def plot_odds_cat(df, cat_var_list, target, figsize, row, col, **kwargs):
         """
         This function helps to plot the odds ratio for binary classification problem for each category of all the categorical variables.
 
@@ -156,16 +158,26 @@ def plot_odds_cat(df, cat_var_list, target, figsize, row, col):
                 total_count_df = _df.groupby(cat_var, as_index=False)['index'].count().rename(columns={'index':'Total_Count'})
                 perc_df = count_df.merge(total_count_df, on=cat_var)
                 perc_df['event_perc'] = perc_df['Count'] / perc_df['Total_Count']
-                credit = perc_df.loc[perc_df[target] == 1, [cat_var, 'event_perc']].reset_index(drop=True)
-                non_credit = perc_df.loc[perc_df[target] == 0, [cat_var, 'event_perc']].reset_index(drop=True)
-                odds_df = pd.DataFrame({'category':credit[cat_var].values, 'odds': (credit['event_perc'] / non_credit['event_perc']).values})
+                event = perc_df.loc[perc_df[target] == 1, [cat_var, 'event_perc']].reset_index(drop=True)
+                non_event = perc_df.loc[perc_df[target] == 0, [cat_var, 'event_perc']].reset_index(drop=True)
+                # Create label 
+                cat_label_s = event[cat_var].astype(str)
+                count_label_s = total_count_df['Total_Count'].astype(str)
+                label_s = cat_label_s.str.cat(count_label_s.str.cat([')']*len(cat_label_s), join='left'), sep='\n(')
+                # Create the dataset for plotting
+                odds_df = pd.DataFrame({'category':event[cat_var].values, 
+                                        'odds': (event['event_perc'] / non_event['event_perc']).values,
+                                        'count': total_count_df['Total_Count'],
+                                        'label': label_s})
                 # Create bar plot
                 sns.barplot(data=odds_df, x='category', y='odds', color='#277BC0', alpha=0.7)
-                #ax.bar(x=x, height=height, color='#277BC0', alpha = 0.7)
-                #x.sort()
-                #ax.set_xticks(x)
                 ax.set_title(cat_var)
-                add_value_labels(ax, spacing=0.01, fmt="{:.2f}", fontsize=8 )
+                add_value_labels(ax, **kwargs)
+                ax.tick_params(axis='x', which='major', labelsize=7)
+                ax.set_xticklabels(odds_df['label'])
+                ax.set_xlabel('category\n(total count)', size=8.5)
+                ax.spines['top'].set_visible(False)
+                ax.spines['right'].set_visible(False)              
                 plt.subplots_adjust(left=0.1,
                                 bottom=0.05,
                                 right=0.9,
