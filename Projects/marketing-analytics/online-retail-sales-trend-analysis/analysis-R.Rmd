@@ -1,0 +1,462 @@
+---
+title: "Online Pet Store Sale Trend Analysis and Visualization using R"
+author: "QH"
+date: "2022-12-30"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(dplyr.summarise.inform = FALSE)
+```
+
+## Background
+This analysis was inspired by the capstone project in the Meta Marketing Analytics Certification - Introduction to Data Analytics course on Coursera. The original goal was to use Tableau for visualization to create insights for a Pet Company called 'Inu + Neko' online retail sales data from 2021-01 to 2021-06.  
+
+I'm extending this analysis to use python and write it up in both python using jupyter notebook and R with R-markdown since:
+* The data set is interesting: It is representative for many retail stores since it has geometric (location of the customers) and chronological (date of transaction) aspects. In addition, there are multiple products that can be analyzed and can be compared which makes the trend analysis more interesting.
+* It can be written-up as a template for future references about similar analyses using `seaborn` and `ggplot2` as visualization tool.
+
+## R library
+```{r library}
+library(tidyverse)
+library(lubridate)
+library(patchwork)
+```
+
+## Quick View of the Sales Data
+
+```{r sales_data_read_in}
+retail_sale <- read_csv('inu_neko_orderline_clean.csv')
+head(retail_sale)
+```
+
+```{r transaction_year}
+# How many years does the order data cover?
+unique(retail_sale$trans_year)
+```
+
+
+```{r transaction_month}
+# How many months does the online order data cover?
+retail_sale %>%
+  group_by(trans_month) %>%
+  summarise(n = n())
+```
+
+From the two lines of code above, we know that the sales data records the transactions from 2021-01 to 2021-06. This puts us into context that we will dive into analysis for monthly trend instead of yearly trend.
+
+```{r create_date}
+# Create date
+retail_sale$trans_date <- date(retail_sale$trans_timestamp)
+```
+
+## Sales Trend
+
+The purpose of the analysis is to understand, visualize and analyze the sales trend. So the first step is to plot the trend. As can be seen from the previous section, it only contains sales in 2021, so we will first plot the daily trend.
+
+```{r sales_trend, fig.height = 5, fig.width = 7, fig.align = "center"}
+grouped_day <- retail_sale %>% 
+  group_by(trans_date) %>%
+  summarise(unique_cust_per_day = n_distinct(cust_id), 
+            total_sales_per_day = sum(total_sales), 
+            total_quantity_per_day = sum(trans_quantity))
+
+grouped_cust_day <- retail_sale %>%
+  group_by(trans_date, cust_id) %>%
+  summarise(total_sales_per_cust_day = sum(total_sales)) %>%
+  ungroup() %>%
+  group_by(trans_date) %>%
+  summarise(mean_daily_sales = mean(total_sales_per_cust_day),
+            sd_daily_sales = sd(total_sales_per_cust_day),
+            n_daily_cust = n_distinct(cust_id)) %>%
+  mutate(se_daily_sales = sd_daily_sales /sqrt(n_daily_cust) * qt(0.975, n_daily_cust)) %>%
+  fill(se_daily_sales, .direction = 'down') %>%
+  rowwise() %>%
+  mutate(low = max(0, mean_daily_sales - se_daily_sales),
+         high = mean_daily_sales + se_daily_sales)
+ 
+# Daily Total Sales/Quantity
+coef <- 20
+p1 <- ggplot(data = grouped_day, aes(x = trans_date)) + 
+  geom_line(aes(y = total_sales_per_day), color = '#1e81b0', linewidth = 1) + 
+  geom_bar(aes(y = total_quantity_per_day * coef), stat = 'identity', 
+           linewidth = .1, color = 'seagreen', alpha = 0.3) + 
+  scale_y_continuous(
+    # Features of the first axis
+    name = "Total Sales Per Day",
+    
+    # Add a second axis and specify its features
+    sec.axis = sec_axis(~.* 1/coef, name = "Total Quantity Per Day")
+  ) + 
+  labs(x = 'Transaction Date') +
+  ggtitle('Daily Total Sales/Quantity') +
+  theme_bw() +
+  theme(
+    axis.title.y = element_text(color = '#1e81b0', size=10),
+    axis.title.y.right = element_text(color = 'seagreen', size=10)
+  )
+p1
+```
+
+
+```{r daily_avg_sales, fig.height = 4, fig.width = 9, fig.align = "center"}
+# Average Daily Sales Per Customer with 95% CI
+p2 <- ggplot(data = grouped_cust_day, aes(x = trans_date, y = mean_daily_sales)) + 
+  geom_line(color = '#1e81b0', linewidth = 1) + 
+  geom_ribbon(aes(ymin =  low, ymax = high), fill = '#adcae6', alpha = 0.6) + 
+  ggtitle('Average Daily Sales Per Customer with 95% CI') + 
+  labs(x = 'Transaction Date', y = 'Sales') +
+  theme_bw()
+p3 <- ggplot(data = grouped_cust_day, aes(x = trans_date, y = n_daily_cust)) + 
+  geom_line(color = '#1e81b0',linewidth = 1) + 
+  ggtitle(('Daily Number of Unique Customers')) + 
+  labs(x = 'Transaction Date', y = 'Count') + 
+  theme_bw()
+p2 + p3
+```
+
+As can be seen from the daily plots above, the total sales per day increases over the 6 months. Since the daily average sales per customer is stable (~$50) over time, and there's an increase in the customer base every day, the reason for the increase in the sale comes from the increased customer base. 
+
+## Customer Demographics 
+
+As the paying customer base increases, are there any changes in the demographics of customers? We will answer this question through the following two aspects: customer age and customer state.
+
+1. Customer Age
+    * 1.1 What's the distribution of customers' age? Does it change over the 6 months?
+    * 1.2 Is there any correlation between customer age and total sales/total quantity sold?
+
+To answer question 1.1, we need to dedup the transaction data by customer id and transaction month. The reason is that for each customer per month, multiple transactions are possible. To understand the age distribution of the customer base, we don't want to give higher weights to the customers simply because they purchased more.
+
+```{r cust_age, fig.height = 5, fig.width = 9, fig.align = "center"}
+# Customer Demographics
+unique_cust_age_df <- retail_sale %>%
+  distinct(cust_id, trans_month, cust_age, .keep_all = FALSE)
+# median of the age by month
+unique_cust_age_df %>%
+  group_by(trans_month) %>%
+  summarise(median_age = median(cust_age))
+## Customer age distribution using boxplot across transaction months
+ggplot(data = unique_cust_age_df, aes(y = cust_age)) + 
+  geom_boxplot(fill = '#1e81b0') + 
+  facet_wrap(~ trans_month, nrow = 1) + 
+  theme_bw() + 
+  ggtitle('Unique Customer Age Distribution over Months') + 
+  labs(x = NULL, y = "Customer Age") +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+```
+
+To answer question 1.2, we can plot the scatter plot between customer age and total sales
+
+```{r age_quantity_corr}
+## Correlation between age and total sales
+sales_age_month <- retail_sale %>%
+  group_by(cust_id, trans_month, cust_age) %>%
+  summarise(month_sales = sum(total_sales),
+            month_quantity = sum(trans_quantity))
+### Correlation coefficient
+sales_age_month %>% ungroup() %>%
+  group_by(trans_month) %>%
+  summarise(cor_age_sales = cor(cust_age, month_sales),
+         cor_age_quantity = cor(cust_age, month_quantity))
+```
+
+```{r age_sales_corr, fig.height = 6, fig.width = 10, fig.align = "center"}
+## Correlation between age and total sales
+ggplot(data = sales_age_month, aes(x = cust_age)) + 
+  geom_point(aes(y = month_sales), color = '#1e81b0', alpha = 0.1) + 
+  facet_wrap(~ trans_month) + 
+  ggtitle('Customer Age vs. Monthly Sales') +
+  labs(x = 'Customer Age', y = 'Monthly Sales')+
+  theme_bw()
+```
+
+
+```{r age_quantity_corr_fig, fig.heigth = 6, fig.width = 10, fig.align = "center"}
+## Correlation between age and total quantity
+ggplot(data = sales_age_month, aes(x = cust_age)) + 
+  geom_point(aes(y = month_quantity), color = '#1e81b0', alpha = 0.1) + 
+  facet_wrap(~ trans_month) + 
+  ggtitle('Customer Age vs. Monthly Quantity Sold') +
+  labs(x = 'Customer Age', y = 'Monthly Quantity Sold')+
+  theme_bw()
+```
+
+__Summary__: 
+
+As can be seen from the plots and table above:
+* There's no significant distribution change for customers' age. The medium customer age is around 30. 
+* There seems no correlation between customer age and total sales.
+
+2. customer location, i.e. states where customer made purchases.
+    * 2.1 What's the distribution of customers' location? Does it change over the 6 months?
+    * 2.2 What's the relationship between the customer location and total sales over the 6 months?
+
+To answer question 2.1, we need to de-dup by customer id, transaction month and customer state.
+
+```{r cust_state, fig.height = 8, fig.width = 11, fig.align = "center"}
+## Customer State Sales
+month_state_sales <- retail_sale %>%
+  group_by(trans_month, cust_state) %>%
+  summarise(month_state_sales = sum(total_sales),
+            month_state_quantity = sum(trans_quantity),
+            month_unique_cust = n_distinct(cust_id))
+## Bar plot by state and transaction month
+bp <-  ggplot(data = month_state_sales)  
+### Unique number of customers
+bp + geom_bar(aes(x = month_unique_cust, 
+                  y = reorder(cust_state, month_unique_cust)), 
+              stat = 'identity', fill = '#1e81b0', alpha = 0.6) +
+  facet_grid(cols = vars(trans_month)) + 
+  ggtitle('Number of Unique Customers by State over 6 Months') + 
+  labs(x = 'Number of Customers', y = 'Customer State') +
+  theme_classic()
+```
+```{r cust_state_sales, fig.height = 8, fig.width = 11, fig.align = "center"}
+### Total Sales
+bp + geom_bar(aes(x = month_state_sales, 
+                  y = reorder(cust_state, month_state_sales)), 
+              stat = 'identity', fill = '#1e81b0', alpha = 0.6) +
+  facet_grid(cols = vars(trans_month)) + 
+  ggtitle('Monthly Total Sales by State over 6 Months') + 
+  labs(x = 'Total Sales', y = 'Customer State') +
+  theme_classic()
+```
+
+__Summary__: 
+
+As can be seen from the plot and table above, almost all states have seen increased paid customer base. Specifically, New York, Pennsyvania, New Jersey are the three top states that paid customer base increases the most over the 6 months.
+
+## Customer Purchasing Behavior
+
+```{r purchase_state, fig.height = 6, fig.width = 8, fig.align = "center"}
+### Purchase by state
+month_state_purchase <- retail_sale %>%
+  group_by(trans_month, cust_state, cust_id) %>%
+  summarise(month_total_per_cust = sum(total_sales)) %>% ungroup() %>%
+  group_by(trans_month, cust_state) %>%
+  summarise(avg_month_sales_per_cust = mean(month_total_per_cust),
+            n_month_per_cust = n())
+cond <- month_state_purchase %>% ungroup() %>% 
+  filter(n_month_per_cust > 30 & trans_month == 6) %>% 
+  select(cust_state)
+
+month_state_purchase[month_state_purchase$cust_state %in% cond$cust_state, ] %>%
+  ggplot(aes(x = trans_month, y = avg_month_sales_per_cust, 
+             color = cust_state)) +
+  geom_line(linewidth = 0.5) + 
+  ggtitle('Average Monthly Sales Per Customer by States') + 
+  scale_x_continuous(name = 'Transaction Month', breaks = seq(1, 7, 1)) +
+  scale_y_continuous(name = 'Average Monthly Sales', breaks = seq(0, 160, 20)) +
+  theme_classic()
+```
+
+__Summary__:  
+
+As can be seen from the tables above, the average monthly spending per customer does not change very much overall and by states which is around $60.
+
+Since we now know that the increase is due to paid customer base increase. We want to break down the total sales to understand whether the preferences of product change. Questions like what's the total sales by product animal type and product category can help to understand customer's preference.
+
+We will define the plotting function first as follows:
+```{r}
+### Purchase by product type
+plot_by_ma <- function(cond){
+  if(cond == 'All States'){
+    df <- retail_sale %>%
+      group_by(trans_month, prod_animal_type) %>%
+      summarise(month_sales_per_prod = sum(total_sales),
+                month_quantity_per_prod = sum(trans_quantity)) %>% ungroup()
+  } else{
+    df <- retail_sale %>% filter(cust_state == cond) %>%
+      group_by(trans_month, prod_animal_type) %>%
+      summarise(month_sales_per_prod = sum(total_sales),
+                month_quantity_per_prod = sum(trans_quantity)) %>% ungroup()
+  }
+  p1 <- ggplot(data = df, 
+               aes(x = factor(trans_month), group = prod_animal_type,
+                   color = prod_animal_type)) + 
+    geom_line(aes(y = month_sales_per_prod), linewidth = 1) + 
+    geom_point(aes(y = month_sales_per_prod), size = 3) +
+    theme_classic() +
+    labs(x = 'Transaction Month', y = 'Monthly Sales') +
+    theme(legend.position = 'bottom')
+  
+  p2 <- ggplot(data = df, 
+               aes(x = factor(trans_month), group = prod_animal_type,
+                   fill = prod_animal_type, color = prod_animal_type)) + 
+    geom_bar(aes(y = month_quantity_per_prod), stat = 'identity', position = 'dodge') + 
+    theme_classic() + 
+    labs(x = 'Transaction Month', y = 'Monthly Quantity Sold') +
+    theme(legend.position = 'bottom')
+  p1 + p2 + plot_annotation(title = paste('Monthly Sales and Quantity by Product Animal Type', cond, sep = ' - '))
+  
+}
+
+### Purchase by Product category and Animal Type
+plot_by_mac <- function(cond){
+  if(cond == 'All States'){
+    df <- retail_sale %>%
+      group_by(trans_month, prod_animal_type, prod_category) %>%
+      summarise(month_sales_per_prod = sum(total_sales),
+                month_quantity_per_prod = sum(trans_quantity)) %>% ungroup()
+  } else{
+    df <- retail_sale %>% filter(cust_state == cond) %>%
+      group_by(trans_month, prod_animal_type, prod_category) %>%
+      summarise(month_sales_per_prod = sum(total_sales),
+                month_quantity_per_prod = sum(trans_quantity)) %>% ungroup()
+  }
+  
+  p1 <- ggplot(data = df,
+         aes(x = factor(trans_month), group = prod_category,
+             color = prod_category)) + 
+    geom_line(aes(y = month_sales_per_prod), linewidth = 1) + 
+    geom_point(aes(y = month_sales_per_prod), size = 3) +
+    facet_grid(cols = vars(prod_animal_type)) + 
+    theme_bw() +
+    labs(x = 'Transaction Month', y = 'Monthly Sales') +
+    theme(legend.position = 'bottom')+ 
+    ggtitle(paste('Total Sales by Month, Product Animal Type and Product Category', cond, sep = ' - '))
+
+  p2 <- ggplot(data = df, 
+         aes(x = factor(trans_month), group = prod_category,
+             color = prod_category)) + 
+    geom_line(aes(y = month_quantity_per_prod), linewidth = 1) + 
+    geom_point(aes(y = month_quantity_per_prod), size = 3) +
+    facet_grid(cols = vars(prod_animal_type)) + 
+    theme_bw() +
+    labs(x = 'Transaction Month', y = 'Monthly Quantity Sold') +
+    theme(legend.position = 'bottom') + 
+    ggtitle(paste('Total Quantity Sold by Month, Product Animal Type and Product Category', cond, sep =' - '))  
+  
+  p1/p2
+}
+```
+
+```{r all_sates_prod}
+plot_by_ma('All States')
+```
+__Summary__: 
+
+As can be seen from the chart above, compared to dog, products that is for cats have larger number of item sold and higher sales over the 6 months.
+
+```{r all_prod_type_cat, fig.height =10, fig.width = 10, fig.align = "center"}
+plot_by_mac('All States')
+```
+
+__Summary__: If we drill down by product category, there are some interesting findings:
+
+* Cat: 
+    * In terms of quantity sold, all for categories for cats are increasing but the four categories increase rates are different. Specifically, the treat category increased the most, bedding increased the least.
+    * In terms of total sales, because bedding has the highest average price per item, it has similar level of increase as toys. While for food and treat, though quantity increased so much, the total sales did not increase as much because of low price per item.
+    
+* Dog: 
+    * In terms of quantity sold and total sales, bedding category wins all other categories. 
+
+By comparing cat and dog type, cat products have more quantity sold than dogs. In addition, the average price per item for cat product category is higher than dogs, it leads to more sales in cat than dog.
+
+### A closer loop at three top states
+```{r ny_prod_type}
+plot_by_ma('New York')
+```
+
+```{r nj_prod_type}
+plot_by_ma('New Jersey')
+```
+
+```{r pen_prod_type}
+plot_by_ma('Pennsylvania')
+```
+
+```{r ny_prod_type_cat, fig.height =10, fig.width = 10, fig.align = "center"}
+plot_by_mac('New York')
+```
+
+```{r nj_prod_type_cat, fig.height =10, fig.width = 10, fig.align = "center"}
+plot_by_mac('New Jersey')
+```
+
+```{r pen_prod_type_cat, fig.height =10, fig.width = 10, fig.align = "center"}
+plot_by_mac('Pennsylvania')
+```
+
+## Cohort Analysis
+This section details a cohort analysis for customers to understand the monthly retention rate and track cohorts purchasing behavior.
+
+```{r cohort_data}
+## Cohort Analysis
+cohort_pop <- retail_sale %>% 
+  group_by(cust_id) %>%
+  mutate(cohort_month = first(trans_month),
+         cohort_index = trans_month - first(trans_month) + 1) %>%
+  group_by(cohort_month, cohort_index) %>%
+  summarise(count_cust = n_distinct(cust_id),
+            mean_quantity = mean(trans_quantity),
+            mean_sales = mean(total_sales)) %>% 
+  mutate(acq_count = first(count_cust),
+         count_perc = count_cust / acq_count)
+# Number of customers
+cohort_pop %>%
+  pivot_wider(id_cols = cohort_month, 
+             names_from = cohort_index,
+             names_prefix = 'ch_index_',
+             values_from = count_cust)
+```
+
+```{r retention_rate}
+# Retention Rates
+percent <- function(x, digits = 2, format = "f", ...) {
+  paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
+}
+
+ggplot(data = cohort_pop, aes(x = factor(cohort_index), 
+                              y = factor(reorder(cohort_month, cohort_index)), 
+                              fill = count_perc)) + 
+  geom_tile(color = 'black') + 
+  geom_text(aes(label = percent(count_perc, digits=1)), color = "white", size = 4) +
+  coord_fixed() + 
+  ggtitle('Retention Rates by Cohort Over Time') + 
+  labs(x = 'Month since Acquisition', y = 'Month of Acquisition')
+```
+```{r ch_avg_quantity}
+# Average quantity sold per transaction
+cohort_pop %>%
+  pivot_wider(id_cols = cohort_month, 
+              names_from = cohort_index,
+              names_prefix = 'ch_index_',
+              values_from = mean_quantity)
+```
+
+```{r ch_avg_sales}
+# Average sales per transaction
+cohort_pop %>%
+  pivot_wider(id_cols = cohort_month, 
+              names_from = cohort_index,
+              names_prefix = 'ch_index_',
+              values_from = mean_sales)
+```
+__Summary__:
+From the above plot and tables, the monthly retention rates are stable for each cohort which is around 15%. The purchasing behavior for each cohort is stable over the months.
+
+## Conclusion
+* Current State of the Business:
+
+    * The online business’ paying customer base was growing exponentially in the 6 months which results in total sales’ exponential growth.
+    * The daily average sales per transaction is around $40 over time which is stable.
+    * The medium age for the customers per day is around 30 over time which is also stable.
+    * The top three total sales states are: New York, Pennsylvania and New Jersey.
+    * Products for cats generating slightly higher sales than products for dogs.
+    * Bedding products lead the sales compared to food, treat and toy.
+    * The monthly retenion rates for different cohorts are stable around 15%.  
+    
+* Some recommendations for the Business:
+    * In order to keep the same growth rate in the next 6 months, it’s better to have a marketing strategy in place through different channels, like youtube, facebook or google ads, news papers etc.
+        * Currently, the customer base is young (median age 30 years old), it will help to attract more people from different age groups.
+        * From the states perspective, especially for customers in California, Connecticut and Texas. Since they are the next 3 top sales other than New York, Pennsylvania and New Jersey. The customer base can potentially be increased if higher chances for them to see the advertisements.
+    * It’s also a good idea to have an online survey for customers to seek feedback and make improvements and increase sales.
+        * From the product category perspective, it is helpful to know if any improvements can be done in for food, treat and toy category so that the sales can be potentially increased.
+        * From customer retention perspective, improvements on the quality or variety of products can increase the proportion of returning customers and thus on sales.
