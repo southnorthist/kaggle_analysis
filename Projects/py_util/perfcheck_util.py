@@ -79,15 +79,18 @@ def plot_feature_importance(estimator, feature_names, encode_cat_list, figsize=(
         importance_array = estimator.feature_importances_.reshape(-1)
     
     importance_df = pd.DataFrame({'var_name_lvl2':np.array(feature_names), 'import_v': importance_array})
-    # identify the encoding categorical variables
-    importance_df['var_name_lvl1'] = np.where(importance_df['var_name_lvl2'].str.split('_').str[0].isin(encode_cat_list), 
-    importance_df['var_name_lvl2'].str.split('_').str[0], importance_df['var_name_lvl2'])
     importance_df['import_v_abs'] = np.abs(importance_df['import_v'])
-    import_abs_max = importance_df.groupby('var_name_lvl1', as_index=False)['import_v_abs'].max().rename(columns={'import_v_abs': 'import_v_abs_max'})
-    importance_df = importance_df.merge(import_abs_max, on='var_name_lvl1')
     importance_df['color'] = np.where(importance_df['import_v'] < 0, '#CE7777', 'steelblue')
-    importance_df_plot = importance_df.sort_values(by=['import_v_abs_max', 'import_v_abs'], ascending=False)
-    # Create Figure
+    if encode_cat_list != None:
+        # identify the encoding categorical variables
+        importance_df['var_name_lvl1'] = np.where(importance_df['var_name_lvl2'].str.split('_').str[0].isin(encode_cat_list), 
+        importance_df['var_name_lvl2'].str.split('_').str[0], importance_df['var_name_lvl2'])
+        import_abs_max = importance_df.groupby('var_name_lvl1', as_index=False)['import_v_abs'].max().rename(columns={'import_v_abs': 'import_v_abs_max'})
+        importance_df = importance_df.merge(import_abs_max, on='var_name_lvl1')
+        importance_df_plot = importance_df.sort_values(by=['import_v_abs_max', 'import_v_abs'], ascending=False)
+    else:
+        # Create Figure
+        importance_df_plot = importance_df.sort_values(by=['import_v_abs'], ascending=False)
     fig, ax = plt.subplots(figsize=figsize)
     pos = np.arange(len(importance_array)) + 0.5
     ax.barh(y=pos, width=importance_df_plot['import_v_abs'], color=importance_df_plot['color'], align="center")
