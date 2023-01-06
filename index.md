@@ -35,26 +35,4 @@ I'm summarizing the basic statistics concepts and machine learning methodologies
 I'm also building utility functions to help preprocessing, visualizing data and tuning machine learning models.
 In addition, I summarize and share useful tips on SQL and MLOPs after self-learning in [here](https://southwest-qh.github.io/).
 
-### About me
-I've worked in both banking and pharmaceutical industry doing analytics in total for 9 years. 
-- 🏔 Two years tenure in pharmaceutical industry.
-  - ✨ __90%__ SAS skills used later learnt in this journey
-  - ✨ Most "statistically" significant industry
-   <img src="/img/biostat_exp.png" width="789" alt="bio_stat">
-  
-- 🏛 Seven years tenure in analytics and modeling in credit risk for lending book.
-  - ✨ Modeling for Banking regulatory requirements
-  <img src="/img/banking_exp.png" width="789" alt="banking_stat">
-  
-- 🔭 I’m currently working on:
-  - Maintaining Data Science Playground repository which includes
-    - Credit risk modeling quick start 
-      - summary of the analytics toolbox I've used over the years 
-      - sample projects using public available data
-    - Machine learning (ML) concepts and methodology simply explained
-    - Miscellaneous projects using the ML techniques and tech-stacks: data visualization, flask app for model development, etc.
-  
-- 🌱 I’m currently learning:
-  - Marketing Analytics
-  - Recommender Systems
-  - Pyspark
+### [About me](https://github.com/southwest-qh)
