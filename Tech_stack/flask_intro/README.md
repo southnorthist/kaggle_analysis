@@ -16,6 +16,6 @@
 ` flask shell`
 7. Create the database object
 ```
-from app import db, Todo
+from app import db
 db.create_all()
 ```
